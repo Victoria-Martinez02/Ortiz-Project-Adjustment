@@ -12,28 +12,32 @@ void encryptData_01(char *data, int datalength)
 {
 	int round = 0;
 	int index = 0;
-	char* Starting_index;
 
 	__asm
 	{
-		xor ecx,ecx
-		mov esi,[round]
-		lea eax,gPasswordHash[0+esi*4]
-		shl eax,8
-		lea ebx,gPasswordHash[1+esi*4]
-		add eax,ebx
-		mov Starting_index[esi],eax
-		mov index,eax
+		xor ecx,ecx									//Clearing registers
+		xor eax,eax
+		xor ebx,ebx
+		mov edi,[round]								//Storing the value of round
+		mov esi,[data]								//Data String ptr
+		mov al,byte ptr gPasswordHash[0+edi*4]
+		shl ax,8									//Mul ax by 256
+		mov bl,byte ptr gPasswordHash[1+edi*4]
+		add ax,bx
+		mov edi,eax									//Starting index
 
-		LOOP1:
-			lea edx,data[ecx]
-			lea eax,gkey[eax]
-			xor edx,eax
-			mov data[ecx], edx
+		xor ebx,ebx
+		mov bl, byte ptr[gkey]						//Stores byte in gkey
 
-			inc ecx
-			cmp ecx, datalength
-			jb LOOP1
+	LOOP1:
+		xor eax,eax
+		mov al,byte ptr[esi+ecx]					//Stores byte in data[ecx] 
+		xor al,bl
+		mov [esi+ecx], al							//overwites byte in data with its xor'd value
+
+		inc ecx										//increments the count
+		cmp ecx, datalength
+		jb LOOP1									//exits loop when ecx is equal to datalength
 	}
 
 	return;
