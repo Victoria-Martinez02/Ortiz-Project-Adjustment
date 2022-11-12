@@ -17,22 +17,47 @@ void decryptData_01(char *data, int sized)
 		xor eax, eax
 		xor ebx, ebx
 		mov edi, [round]								//Storing the value of round
-		mov esi, [data]								//Data String ptr
+		mov esi, [data]									//Data String ptr
 		mov ah, byte ptr gPasswordHash[0 + edi * 4]		//Generating Starting index and storing in ax								
 		mov al, byte ptr gPasswordHash[1 + edi * 4]
 
 		xor ebx, ebx
-		mov bl, byte ptr[gkey + eax]						//Stores byte in gkey
+		mov bl, byte ptr[gkey + eax]					//Stores byte in gkey
 
 	LOOP1:
 		xor eax, eax
-		mov al, byte ptr[esi + ecx]					//Stores byte in data[ecx] 
+		mov al, byte ptr[esi + ecx]						//Stores byte in data[ecx] 
 		xor al, bl
-		mov[esi + ecx], al							//overwites byte in data with its xor'd value
 
-		inc ecx										//increments the count
+		//for each data[x]
+		ror al, 3										//#E rotate 3 bits LEFT
+
+		xor ah, ah										//#A code table swap - gDecodeTable; keep
+		mov al, byte ptr[gDecodeTable + eax]			
+
+		ror al, 4										//#C nibble rotate left 1
+
+		xor al, 0x62									//#D invert bits 1,5,6; 1-8 0x31; keep
+
+		push ecx										//#B reverse bit order - keep
+		xor ecx, ecx
+		REVERSE :
+			rcr al, 1
+			rcl ah, 1
+
+			inc ecx
+			cmp ecx, 8
+			jb REVERSE
+
+		pop ecx
+		mov al, ah
+
+
+		mov[esi + ecx], al								//overwites byte in data with its xor'd value
+				
+		inc ecx											//increments the count
 		cmp ecx, sized
-		jb LOOP1									//exits loop when ecx is equal to datalength
+		jb LOOP1										//exits loop when ecx is equal to datalength
 
 	}
 

@@ -104,6 +104,7 @@ int encryptFile(FILE *fptrIn, FILE *fptrOut)
 	{
 	case 1:
 		encryptData_01(buffer, filesize);
+		decryptData_01(buffer, filesize);
 		break;
 
 	case 2:

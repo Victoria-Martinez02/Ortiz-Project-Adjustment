@@ -24,13 +24,37 @@ void encryptData_01(char *data, int datalength)
 		mov al,byte ptr gPasswordHash[1+edi*4]
 
 		xor ebx,ebx
-		mov bl, byte ptr[gkey + eax]						//Stores byte in gkey
+		mov bl, byte ptr[gkey + eax]				//Stores byte in gkey
 
 	LOOP1:
 		xor eax,eax
 		mov al,byte ptr[esi+ecx]					//Stores byte in data[ecx] 
 		xor al,bl
-		mov [esi+ecx], al							//overwites byte in data with its xor'd value
+
+		//for each data[x]
+		push ecx									//#B reverse bit order
+		xor ecx,ecx
+		REVERSE:
+			rcr al,1										
+			rcl ah,1
+			
+			inc ecx
+			cmp ecx,8
+			jb REVERSE
+
+		pop ecx
+		mov al,ah
+
+		xor al,0x62									//#D invert bits 1,5,6; 1-8 0x31
+
+		rol al,4									//#C nibble rotate left 1
+
+		xor ah,ah
+		mov al,byte ptr [gEncodeTable+eax]			//#A code table swap - gEncodeTable
+
+		rol al,3									//#E rotate 3 bits LEFT
+		
+		mov[esi + ecx], al							//overwites byte in data with its xor'd value
 
 		inc ecx										//increments the count
 		cmp ecx, datalength

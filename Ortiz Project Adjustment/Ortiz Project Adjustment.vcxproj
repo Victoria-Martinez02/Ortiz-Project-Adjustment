@@ -24,6 +24,7 @@
     <ProjectGuid>{1b8e1ac5-bdae-4494-a101-bbd48ad1aa04}</ProjectGuid>
     <RootNamespace>OrtizProjectAdjustment</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>Team_03_CS3844_Project_01</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
