@@ -104,7 +104,6 @@ int encryptFile(FILE *fptrIn, FILE *fptrOut)
 	{
 	case 1:
 		encryptData_01(buffer, filesize);
-		decryptData_01(buffer, filesize);
 		break;
 
 	case 2:
@@ -212,7 +211,7 @@ FILE *openOutputFile(char *filename)
 } // openOutputFile
 
 
-void usage(char *argv[])	//   cryptor.exe -e -i <input file> –k <keyfile> -p <password> [–r <#rounds>]
+void usage(char *argv[])	//   cryptor.exe -e -i <input file> â€“k <keyfile> -p <password> [â€“r <#rounds>]
 {
 	printf("\n\nUsage:\n\n");
 
